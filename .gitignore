@@ -1,0 +1,14 @@
+dist/
+node_modules/
+.research/
+.screenshots/
+tmp/
+abc.txt
+*.pdf
+!assets/**/*.pdf
+.env
+.env.*
+!.env.example
+*.log
+Thumbs.db
+.DS_Store
