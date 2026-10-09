@@ -21,6 +21,6 @@ README snapshots were fetched read-only from the GitHub REST API and saved under
 
 The public HydraFusion README includes the academic email address `Kushagra.G27pgai@jioinstitute.edu.in`, which is used for contact. The supplied PDF files include personal contact details; street address, phone numbers and raw PDFs are not included in public website content. A résumé download remains unset pending the separately requested résumé work.
 
-The Profile summary and both supplied résumés describe HCLTech employment as nine months, while the Profile experience header calls it ten months. The portfolio uses the consistent September 2024–June 2025 dates without asserting a month count. Source documents agree on OrbitalEye's July–August 2025 dates, which are preserved even though the current Jio programme started in April 2026.
+The Profile summary and both supplied résumés describe HCLTech employment as nine months, while the Profile experience header calls it ten months. The portfolio uses the consistent September 2024–June 2025 dates without asserting a month count. On 9 October 2026, the owner corrected OrbitalEye's year to 2026. This explicit correction takes precedence over the older résumé dates; the website displays 2026 without inferring the months.
 
 RepoSage's 60% to 70% source-hit result is repeated in the supplied Profile and latest résumé. The portfolio retains its conservative evaluation-set description in view of the README's qualification and does not assert that those results have been independently reproduced.

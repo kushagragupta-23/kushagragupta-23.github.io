@@ -21,7 +21,8 @@ function visual(project) {
 }
 
 function card(project) {
-  return `<article class="project-card">${visual(project)}<div class="project-meta"><span class="project-category">${escape(project.category)}</span><span>${escape(project.year || 'Industry project')}</span></div><div class="project-title-row"><h3><button type="button" class="project-title-button" data-project="${escape(project.id)}">${escape(project.title)}</button></h3>${project.github ? `<a class="project-github" href="${escape(project.github)}" ${external} aria-label="${escape(project.title)} source code on GitHub">${githubIcon}</a>` : '<span class="project-private">PROJECT NOTES ↗</span>'}</div><p class="project-summary">${escape(project.summary)}</p><div class="project-tags">${project.tags.slice(0,4).map(tag => `<span>${escape(tag)}</span>`).join('')}</div></article>`;
+  const context = project.id === 'hydrafusion' ? 'Two-person research · 2,000-image benchmark' : project.id === 'openvid' ? 'Industry project · IntellAxis AI' : project.id === 'eduverse' ? 'Team project · Five contributors' : project.id === 'orbitaleye' ? 'Group project · Synthetic satellite data' : project.id === 'nano-gpt' ? 'From scratch · Character-level transformer' : 'Local-first · Applied generative AI';
+  return `<article class="project-card${project.id === 'hydrafusion' ? ' flagship-project' : ''}">${visual(project)}<div class="project-card-copy"><div class="project-meta"><span class="project-category">${escape(project.category)}</span><span>${escape(project.year || 'Industry project')}</span></div><div class="project-title-row"><h3><button type="button" class="project-title-button" data-project="${escape(project.id)}">${escape(project.title)}</button></h3>${project.github ? `<a class="project-github" href="${escape(project.github)}" ${external} aria-label="${escape(project.title)} source code on GitHub">${githubIcon}</a>` : ''}</div><p class="project-summary">${escape(project.summary)}</p>${project.id === 'hydrafusion' ? '<p class="project-proof"><strong>95.2%</strong> test accuracy <span>·</span> <strong>0.9842</strong> ROC-AUC</p>' : ''}<div class="project-tags">${project.tags.slice(0,4).map(tag => `<span>${escape(tag)}</span>`).join('')}</div><div class="project-footer"><a class="project-notes-link" href="#project/${escape(project.id)}" data-project="${escape(project.id)}">Read project notes <span aria-hidden="true">↗</span></a><span class="project-context">${escape(context)}</span></div></div></article>`;
 }
 
 const categories = ['All projects', ...new Set(portfolio.projects.map(project => project.category))];
@@ -56,19 +57,37 @@ renderArchive();
 
 const dialog = $('#project-dialog');
 let projectTrigger;
-function openProject(id, trigger) {
+let returnHash = '#work';
+function openProject(id, trigger, updateUrl = true) {
   const project = portfolio.projects.find(item => item.id === id);
   if (!project) return;
-  projectTrigger = trigger;
+  if (!dialog.open) {
+    projectTrigger = trigger;
+    returnHash = location.hash.startsWith('#project/') ? '#work' : location.hash || '#work';
+  }
   $('#dialog-content').innerHTML = `<p class="dialog-category">${escape(project.category)}${project.period || project.year ? ` · ${escape(project.period || project.year)}` : ''}</p><h2 id="dialog-title">${escape(project.title)}</h2><p class="dialog-summary">${escape(project.summary)}</p>${project.metrics.length ? `<div class="dialog-metrics">${project.metrics.map(metric => `<div class="dialog-metric"><b>${escape(metric.value)}</b><span>${escape(metric.label)}</span></div>`).join('')}</div>` : ''}<div class="dialog-details">${project.details.map(detail => `<p>${escape(detail)}</p>`).join('')}</div><div class="project-tags">${project.tags.map(tag => `<span>${escape(tag)}</span>`).join('')}</div><p class="dialog-collaboration">${escape(project.collaboration)}</p><div class="dialog-links">${project.github ? `<a class="button button-primary" href="${escape(project.github)}" ${external}>Explore the source <span aria-hidden="true">↗</span></a>` : '<p class="dialog-no-source">Public source code is not currently available. Happy to discuss the project.</p>'}${project.url ? `<a class="text-link" href="${escape(project.url)}" ${external}>Live project ↗</a>` : ''}<a class="text-link" href="#contact" data-close-dialog>Let’s discuss it ↗</a></div>`;
-  dialog.showModal();
+  $('#dialog-content').insertAdjacentHTML('beforeend', '<div class="project-share"><button type="button" id="copy-project-link">Copy project link ↗</button><span id="project-copy-status" role="status" aria-live="polite"></span></div>');
+  $('#copy-project-link').addEventListener('click', async () => {
+    const link = `${location.origin}${location.pathname}#project/${encodeURIComponent(project.id)}`;
+    try { await navigator.clipboard.writeText(link); $('#project-copy-status').textContent = 'Link copied'; }
+    catch { $('#project-copy-status').textContent = link; }
+  });
+  if (!dialog.open) dialog.showModal();
+  if (updateUrl && location.hash !== `#project/${project.id}`) history.pushState(null, '', `#project/${project.id}`);
   document.body.style.overflow = 'hidden';
   dialog.scrollTop = 0;
 }
-$('#project-grid').addEventListener('click', event => { const trigger = event.target.closest('[data-project]'); if (trigger) openProject(trigger.dataset.project, trigger); });
+$('#project-grid').addEventListener('click', event => { const trigger = event.target.closest('[data-project]'); if (trigger) { event.preventDefault(); openProject(trigger.dataset.project, trigger); } });
 $('.dialog-close').addEventListener('click', () => dialog.close());
 dialog.addEventListener('click', event => { if (event.target.closest('[data-close-dialog]')) dialog.close(); else if (event.target === dialog) { const rect = dialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close(); } });
-dialog.addEventListener('close', () => { document.body.style.overflow = ''; projectTrigger?.focus({ preventScroll: true }); });
+dialog.addEventListener('close', () => { document.body.style.overflow = ''; if (location.hash.startsWith('#project/')) history.replaceState(null, '', returnHash); projectTrigger?.focus({ preventScroll: true }); });
+function syncProjectHash() {
+  const id = location.hash.startsWith('#project/') ? location.hash.slice('#project/'.length) : null;
+  if (id && portfolio.projects.some(project => project.id === id)) openProject(id, null, false);
+  else if (dialog.open) dialog.close();
+}
+window.addEventListener('hashchange', syncProjectHash);
+syncProjectHash();
 
 const themeButton = $('.theme-toggle');
 function setTheme(theme) {
@@ -87,6 +106,20 @@ menuButton.addEventListener('click', () => { const open = menuButton.getAttribut
 mobileNav.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && !mobileNav.hidden) { closeMenu(); menuButton.focus(); } });
 document.addEventListener('click', event => { if (!event.target.closest('.site-header')) closeMenu(); });
+matchMedia('(min-width: 601px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
+
+if ('IntersectionObserver' in window) {
+  const navObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      document.querySelectorAll('.desktop-nav a').forEach(link => {
+        if (link.hash === `#${entry.target.id}`) link.setAttribute('aria-current','location');
+        else link.removeAttribute('aria-current');
+      });
+    }
+  }, { rootMargin: '-15% 0px -65% 0px' });
+  document.querySelectorAll('main section[id]').forEach(section => navObserver.observe(section));
+}
 
 if (portfolio.email) {
   $('#email-link').href = `mailto:${portfolio.email}`;
