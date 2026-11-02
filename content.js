@@ -115,6 +115,31 @@ export const portfolio = {
   ],
   projects: [
     {
+      id: 'regutax-ai',
+      title: 'Autonomous Regulatory Compliance Engine',
+      category: 'Generative AI',
+      year: '2026',
+      period: 'Nov 2026',
+      summary: 'Autonomous multi-agent intelligence system for statutory auditing, 10-signal hybrid scoring, and zero-hallucination compliance risk evaluation.',
+      tags: ['FastAPI', 'Multi-Agent', 'Hybrid RAG', 'BM25', 'Gradio', 'BeautifulSoup4', 'Pydantic'],
+      github: 'https://github.com/kushagragupta-23/autonomous-regulatory-compliance-engine',
+      url: 'https://huggingface.co/spaces/kushagragupta1998/regulatory-compliance-agent',
+      featured: true,
+      kind: 'repository',
+      details: [
+        'Architected an autonomous multi-agent reasoning pipeline that ingests raw regulatory circulars (CBIC, CBDT, DGFT, RBI, SEBI) and evaluates exposure based on taxpayer turnover and corporate structure.',
+        'Engineered a 10-signal hybrid scoring engine combining BM25 exact lexical matching with semantic embeddings and half-life freshness decay.',
+        'Features an automated BeautifulSoup4 scraper for official regulatory gazettes, deterministic statutory grounding (< 0.05 hallucination risk score), and automated executive PDF memorandum generation.',
+        'Shipped with dual interfaces: an enterprise FastAPI web dashboard and a live interactive Gradio application deployed on Hugging Face Spaces.',
+      ],
+      metrics: [
+        { value: '10', label: 'scoring signals' },
+        { value: '< 0.05', label: 'hallucination risk' },
+        { value: '16/16', label: 'unit tests passed' },
+      ],
+      collaboration: 'Flagship individual AI engineering project',
+    },
+    {
       id: 'hydrafusion',
       title: 'HydraFusion-Net',
       category: 'Machine Learning',
@@ -291,6 +316,13 @@ export const portfolio = {
     },
   ],
   archive: [
+    {
+      title: 'Autonomous Regulatory Compliance Engine',
+      github: 'https://github.com/kushagragupta-23/autonomous-regulatory-compliance-engine',
+      language: 'Python',
+      description: 'Enterprise multi-agent intelligence system for continuous statutory auditing and zero-hallucination risk evaluation.',
+      fork: false,
+    },
     {
       title: 'HydraFusion-Net',
       github: 'https://github.com/kushagragupta-23/Dual-Cue-AI-Generated-Image-Detection-via-Entropy-and-Bit-Plane-Feature-Fusion',
