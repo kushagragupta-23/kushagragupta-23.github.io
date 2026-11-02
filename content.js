@@ -125,7 +125,7 @@ export const portfolio = {
       github: 'https://github.com/kushagragupta-23/autonomous-regulatory-compliance-engine',
       url: 'https://huggingface.co/spaces/kushagragupta1998/regulatory-compliance-agent',
       featured: true,
-      kind: 'repository',
+      kind: 'compliance',
       details: [
         'Architected an autonomous multi-agent reasoning pipeline that ingests raw regulatory circulars (CBIC, CBDT, DGFT, RBI, SEBI) and evaluates exposure based on taxpayer turnover and corporate structure.',
         'Engineered a 10-signal hybrid scoring engine combining BM25 exact lexical matching with semantic embeddings and half-life freshness decay.',
